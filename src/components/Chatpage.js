@@ -16,10 +16,11 @@ const Chatpage = () => {
                 .then((isValid) => {
                     if (isValid) {
                         console.log('Token valid')
+                        navigate('/chatpage')
                     }
                     else {
                         console.log('Token not valid')
-                        navigate('/')
+                        //navigate('/')
                     }
                 })
                 .catch((error) => {
@@ -28,7 +29,7 @@ const Chatpage = () => {
         }
         else {
             console.log('Token not found')
-            navigate('/')
+            //navigate('/')
         }
     }, [navigate])
 

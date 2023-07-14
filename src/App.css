@@ -3,6 +3,13 @@
   margin: 0%;
 }
 
+.divider-rightcom {
+  background-color: #050505;
+  margin-left: 40px;
+  margin-top: 60px;
+  font-size: 2px;
+}
+
 .fullscreen {
   background-image: url(bck-image.jpg);
   width: 1536px;
@@ -12,6 +19,12 @@
 .navbar {
   padding: 0%;
   margin: 0%;
+}
+
+.user-name {
+  font-size: 26px;
+  font-weight: bold;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
 .containersign {
@@ -31,11 +44,11 @@
 .container {
   margin-top: 0.5px;
   display: flex;
-
+  background-color: #050505;
 }
 
 .item1 {
-  background-color: #c4d1df;
+  background-color: white;
   padding: 10px;
   text-align: center;
   color: #050505;
@@ -45,7 +58,7 @@
 }
 
 .item2 {
-  background-color: #c4d1df;
+  background-color: white;
   padding: 10px;
   text-align: center;
   color: #050505;
@@ -53,8 +66,13 @@
   width: 700px;
 }
 
+.name-contacts {
+  margin-top: 5px;
+  margin-left: 3px;
+}
+
 .item3 {
-  background-color: #c4d1df;
+  background-color: white;
   padding: 10px;
   text-align: center;
   color: #050505;

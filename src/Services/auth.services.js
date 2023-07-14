@@ -35,21 +35,21 @@ export const signUpApi = async (data) => {
 
 export const validateToken = async (token) => {
     try {
-        const response = await axios.get(`https://ping-ul-backend.loca.lt/api/auth/validatetoken`, {
-            headers: {
-                Authorization: `Bearer ${token}`
+        const response = await axios.get('https://ping-ul-backend.loca.lt/api/auth/validatetoken',
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             }
-        })
-        if (response.status === 200) {
-            return true
-        }
-        else {
-            return false
-        }
+        );
+        const result = {
+            isSuccess: true,
+            data: response.data,
+        };
+        return result;
+    } catch (error) {
+        console.error('Token validation error', error);
+        throw error;
     }
-    catch (error) {
-        console.error('Token validation error', error)
-
-    }
-
 }
+

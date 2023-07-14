@@ -5,12 +5,12 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Button from '@mui/material/Button';
 import AuthState from '../auth/Authcontext';
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import LoggedInUserDetails from './LoggedInUserDetails';
 
 const Navbar = () => {
     const { handleLogout, checkLoggedInStatus } = useContext(AuthState)
@@ -32,21 +32,12 @@ const Navbar = () => {
                             component="div"
                             sx={{ display: { xs: 'none', sm: 'block' } }}
                         >
-                            ATOMS
+                            PING UL
                         </Typography>
 
                         <Box sx={{ flexGrow: 1 }} />
                         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-
-                            <IconButton
-                                size="large"
-                                aria-label="show 17 new notifications"
-                                color="inherit"
-                            >
-                                <Badge badgeContent={17} color="error">
-                                    <NotificationsIcon />
-                                </Badge>
-                            </IconButton>
+                            <LoggedInUserDetails />
                             <Button
                                 size="large"
                                 variant="text"

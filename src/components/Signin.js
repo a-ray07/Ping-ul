@@ -39,6 +39,9 @@ const Signin = () => {
             const response = await signInApi(formData)
             if (response.isSuccess) {
                 localStorage.setItem('token', token)
+                localStorage.setItem('User id:', response.data.user._id)
+                localStorage.setItem('name', response.data.user.name)
+                console.log('Uder Id', response.data.user._id)
                 setIsLoggedIn(true)
                 console.log('Signin Successful:', response)
                 navigate('/chatpage')
@@ -46,7 +49,8 @@ const Signin = () => {
         } catch (error) {
             console.error('Signin Error:', error)
         }
-    };
+    }
+
 
     return (
         <div className="fullscreen">
