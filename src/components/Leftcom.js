@@ -105,7 +105,7 @@ const Leftcom = () => {
                 console.error(response.errorMessage);
             }
         } else {
-            console.log('Token not found');
+            console.log('Token not found.');
         }
     }
 
