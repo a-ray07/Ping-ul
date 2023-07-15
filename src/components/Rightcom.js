@@ -12,7 +12,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import Typography from '@mui/material/Typography';
 import { createconversationApi } from '../Services/conversation.service';
-import AuthState from '../auth/Authcontext';
+import CentralState from '../context/CentralContext';
 
 
 
@@ -20,19 +20,19 @@ const Rightcom = () => {
     const [name, setName] = useState('')
     const [showMiddlecom, setShowMiddlecom] = useState(false);
     const [newUserId, setNewUserId] = useState('')
-    const { selectedUser, setSelectedUSer, addNewContactName, setAddNewContactName } = useContext(AuthState)
+    const { newConversation, setNewConversation, selectedUser, setSelectedUSer, addNewContactName, loggedInUserId, setAddNewContactName, loggedInUserName } = useContext(CentralState)
 
 
     const handleChatIconClick = async () => {
-        const loggedInUserId = localStorage.getItem('User id:')
         const token = localStorage.getItem('token')
         console.log('details:', newUserId, loggedInUserId, token)
         const users = [newUserId]
         const response = await createconversationApi(users, token)
         if (response.isSuccess) {
             console.log('Conversation created', response.data)
-            const newUserName = response.data.user.name
-            console.log('New Name:', newUserName)
+            // const newUserName = response.data.user.name
+            // console.log('New Name:', newUserName)
+            setNewConversation(response.data)
         }
         else {
             console.error(response.errorMessage)
@@ -76,6 +76,7 @@ const Rightcom = () => {
     //Ping-UL:04e6a315-cbbc-4c15-993c-a4f08f14867f    Monica
     //Ping-UL:b24ed657-abff-4710-ad90-3c7d4b572963    Wolfs
     //Ping-UL:bec37582-0bfd-4bd2-89e6-d0172c858956    Joey
+    //Ping-UL:18bf3658-9012-4876-9fad-fd72e9a98beb    Hello
 
     const VideoCallIconWrapper = styled("div")(({ }) => ({
         display: "flex",
@@ -139,7 +140,6 @@ const Rightcom = () => {
         },
     }));
 
-    const loggedInUserName = localStorage.getItem('name')
 
     return (
         <div>

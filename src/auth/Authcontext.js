@@ -7,14 +7,7 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [messages, setMessages] = useState([])
-    const [inputMessage, setInputMessage] = useState('')
-    const [name, setName] = useState('')
-    const [pingId, setPingId] = useState('')
-    const [conversations, setConversations] = useState([])
-    const [selectedConversationId, setSelectedConversationId] = useState(null)
-    const [selectedUser, setSelectedUSer] = useState(null)
-    const [addNewContactName, setAddNewContactName] = useState([])
+
 
 
 
@@ -33,7 +26,7 @@ export const AuthProvider = ({ children }) => {
         navigate("/");
     };
 
-    return <AuthState.Provider value={{ addNewContactName, setAddNewContactName, selectedUser, setSelectedUSer, selectedConversationId, setSelectedConversationId, conversations, setConversations, pingId, setPingId, name, setName, navigate, isLoggedIn, setIsLoggedIn, handleLogout, checkLoggedInStatus, messages, setMessages, inputMessage, setInputMessage }}>{children}</AuthState.Provider>
+    return <AuthState.Provider value={{ isLoggedIn, setIsLoggedIn, checkLoggedInStatus, handleLogout, navigate }}>{children}</AuthState.Provider>
 
 };
 

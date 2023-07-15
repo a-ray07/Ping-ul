@@ -10,14 +10,12 @@ import Typography from '@mui/material/Typography';
 import { fetchuserApi } from '../Services/contacts.service';
 import { convfetchApi } from '../Services/conversation.service';
 import { getmessageApi } from '../Services/messages.service';
-import AuthState from '../auth/Authcontext';
+import CentralState from '../context/CentralContext';
 
 
 const Leftcom = () => {
 
-    const { addNewContactName, setAddNewContactName, selectedUser, setSelectedUSer, name, setName, conversations, setConversations, pingId, setPingId, messages, setMessages, selectedConversationId, setSelectedConversationId } = useContext(AuthState)
-
-
+    const { newConversation, setNewConversation, loggedInUserId, setLoggedInUserId, loggedInUserName, setLoggedInUserName, addNewContactName, setAddNewContactName, selectedUser, setSelectedUSer, name, setName, conversations, setConversations, pingId, setPingId, messages, setMessages, selectedConversationId, setSelectedConversationId } = useContext(CentralState)
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -25,9 +23,11 @@ const Leftcom = () => {
             validateToken(token)
                 .then((result) => {
                     if (result.isSuccess) {
-                        const { name, pingId } = result.data
+                        const { name, pingId, _id } = result.data
                         setName(name)
                         setPingId(pingId)
+                        setLoggedInUserName(name)
+                        setLoggedInUserId(_id)
                         fetchConversation(token)
                     } else {
                         console.log('Token not valid');
@@ -55,28 +55,23 @@ const Leftcom = () => {
     }
 
     useEffect(() => {
-        const addConversationUser = (addNewContactName) => {
-            if (!conversations.find((conversation) => conversation._id === addNewContactName)) {
-                const newConversation = {
-                    _id: addNewContactName,
-                };
-                // const selectedConversation = conversations.find((conversation) => conversation._id === newConversation);
-                // const newUser = selectedConversation.users.find((user) => user.name !== name);
-                // if (newUser) {
-                //     setName(newUser.name);
-                // }
+        if (newConversation) {
+            setConversations((prev) => [
+                ...prev,
+                newConversation
+            ])
+        }
+    }, [newConversation])
 
-                setConversations((prevConversations) => [...prevConversations, newConversation]);
+    const handleUserClick = async (conversationId) => {
+        const selectedConversation = conversations.find((conversation) => conversation._id === conversationId);
+        const idd = selectedConversation._id
+        setSelectedConversationId(conversationId)
+        console.log('cid:', idd)
+        const selecteUser = selectedConversation.users.find((user) => user.name !== name)
+        setSelectedUSer(selecteUser)
 
-                console.log('New Conversation Ids:', conversations)
-
-            }
-        };
-        addConversationUser(addNewContactName)
-
-    }, [])
-
-
+    }
 
 
     const Item = styled(Paper)(({ theme }) => ({
@@ -86,29 +81,6 @@ const Leftcom = () => {
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
-
-    const handleUserClick = async (conversationId) => {
-        const selectedConversation = conversations.find((conversation) => conversation._id === conversationId);
-        const idd = selectedConversation._id
-        setSelectedConversationId(conversationId)
-        console.log('cid:', idd)
-
-        const selecteUser = selectedConversation.users.find((user) => user.name !== name)
-        setSelectedUSer(selecteUser)
-
-        const token = localStorage.getItem('token')
-        if (token) {
-            const response = await getmessageApi(1, 100, idd, token);
-            if (response.isSuccess) {
-                setMessages(response.data.messages);
-            } else {
-                console.error(response.errorMessage);
-            }
-        } else {
-            console.log('Token not found.');
-        }
-    }
-
 
 
     return (
@@ -126,7 +98,7 @@ const Leftcom = () => {
                         <Grid item xs={11}>
                             <Stack direction="row" spacing={2}>
                                 <div><br />
-                                    <div className='user-name'>{name}</div>
+                                    <div className='user-name' >{name}</div>
                                 </div>
                             </Stack>
                         </Grid>

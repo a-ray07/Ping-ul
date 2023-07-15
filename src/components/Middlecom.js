@@ -7,9 +7,10 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { validateToken } from '../Services/auth.services';
-import AuthState from '../auth/Authcontext';
 import { getmessageApi, personalmessageApi } from '../Services/messages.service';
 import { convfetchApi } from '../Services/conversation.service';
+import CentralState from '../context/CentralContext';
+import { object } from 'yup';
 
 const ChatContainer = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(2),
@@ -44,8 +45,8 @@ const ChatInputContainer = styled(Stack)(({ theme }) => ({
 }));
 
 const Middlecom = () => {
-    const { messages, setMessages, inputMessage, setInputMessage, selectedConversationId, setSelectedConversationId, setName, setPingId, setConversations } = useContext(AuthState)
-    const [loggedInUserId, setLoggedInUserId] = useState(null);
+    const { messages, setMessages, inputMessage, setInputMessage, selectedConversationId, selectedUser, loggedInUserId } = useContext(CentralState)
+    const [showMessages, setShowMessages] = useState([])
 
 
     const handleInputChange = (event) => {
@@ -65,12 +66,43 @@ const Middlecom = () => {
                 conversationId: selectedConversationId,
             }
             setMessages([...messages, newMessage])
+            // setMessages((prev) => ({
+            //     ...prev,
+            //     [selectedConversationId]: [...prev[selectedConversationId], newMessage],
+            // }));
             setInputMessage('')
         }
         else {
             console.log('Error occurred while sending message:', response.errorMessage);
         }
     }
+
+    const token = localStorage.getItem('token');
+
+    useEffect(() => {
+        if (Object.keys(messages).includes(selectedConversationId)) {
+            setShowMessages(messages[selectedConversationId])
+            console.log('Mes:', showMessages)
+            return
+        }
+
+        else {
+            const fetchMessages = (async () => {
+                const res = await getmessageApi(1, 100, selectedConversationId, token)
+                if (res.isSuccess) {
+                    setMessages((prev) => {
+                        prev[selectedConversationId] = res.data
+                        return prev
+                    })
+                    setShowMessages(res.data)
+                }
+                else {
+                    console.error(res.errorMessage);
+                }
+            })
+            fetchMessages()
+        }
+    }, [selectedConversationId, token, messages, setMessages]);
 
     const MessageContent = styled(Box)(({ theme, isSent }) => ({
         backgroundColor: isSent ? '#4caf50' : '#2196f3',
@@ -80,23 +112,13 @@ const Middlecom = () => {
         width: 'fit-content'
     }));
 
-    useEffect(() => {
-        console.log('Messagess:', messages)
-        let userId = localStorage.getItem('User id:')
-        console.log('User Id:', userId)
-        setLoggedInUserId(userId)
-        const senderId = messages.map((message) => message.sender_id)
-        console.log("Sender Id:", senderId)
-    }, [messages])
-
-    const showMessages = messages.filter((message) => message.conversationId === selectedConversationId)
 
     return (
         <Box>
-            <Typography variant="h4" component="h1" mb={2}>Chats</Typography>
+            <Typography variant="h4" component="h1" mb={2}>{ }</Typography>
 
             <ChatContainer elevation={0}>
-                {messages
+                {Array.isArray(showMessages) && showMessages
                     .map((message) => (
                         <ChatMessage className={message.sender_id === loggedInUserId ? 'user-b' : 'user-a'}>
                             <MessageContent isSent={message.sender_id === loggedInUserId} >
@@ -115,5 +137,3 @@ const Middlecom = () => {
 };
 
 export default Middlecom;
-
-//

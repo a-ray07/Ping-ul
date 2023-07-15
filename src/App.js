@@ -5,16 +5,19 @@ import Signup from './components/Signup';
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './auth/Authcontext';
 import ProtectedChatpage from './auth/auth.guard';
+import { CentralStateProvider } from './context/CentralContext';
 
 function App() {
   return (
     <>
       <AuthProvider>
-        <Routes>
-          <Route path='/' element={<Signin />} />
-          <Route path='/signup' element={<Signup />} />
-          <Route path='/chatpage' element={<ProtectedChatpage />} />
-        </Routes>
+        <CentralStateProvider>
+          <Routes>
+            <Route path='/' element={<Signin />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/chatpage' element={<ProtectedChatpage />} />
+          </Routes>
+        </CentralStateProvider>
       </AuthProvider>
     </>
   );
