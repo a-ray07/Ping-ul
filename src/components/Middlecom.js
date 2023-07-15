@@ -15,6 +15,8 @@ import { object } from 'yup';
 const ChatContainer = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
+    overflowY: 'auto',
+    maxHeight: '400px'
 }));
 
 const ChatMessage = styled(Box)(({ theme }) => ({
@@ -59,17 +61,20 @@ const Middlecom = () => {
         }
 
         const response = await personalmessageApi(localStorage.getItem('token'), selectedConversationId, inputMessage, loggedInUserId)
+
         if (response.isSuccess) {
             const newMessage = {
                 text: inputMessage,
                 sender_id: loggedInUserId,
                 conversationId: selectedConversationId,
             }
-            setMessages([...messages, newMessage])
-            // setMessages((prev) => ({
-            //     ...prev,
-            //     [selectedConversationId]: [...prev[selectedConversationId], newMessage],
-            // }));
+            //setMessages([...messages, newMessage])
+            setMessages((prev) => {
+                const updatedMessage = { ...prev }
+                updatedMessage[selectedConversationId] = [...(updatedMessage[selectedConversationId] || []),
+                    newMessage]
+                return updatedMessage
+            });
             setInputMessage('')
         }
         else {
@@ -83,26 +88,31 @@ const Middlecom = () => {
         if (Object.keys(messages).includes(selectedConversationId)) {
             setShowMessages(messages[selectedConversationId])
             console.log('Mes:', showMessages)
+            console.log('Mesg:', messages)
             return
         }
 
-        else {
-            const fetchMessages = (async () => {
-                const res = await getmessageApi(1, 100, selectedConversationId, token)
-                if (res.isSuccess) {
-                    setMessages((prev) => {
-                        prev[selectedConversationId] = res.data
-                        return prev
-                    })
-                    setShowMessages(res.data)
-                }
-                else {
-                    console.error(res.errorMessage);
-                }
-            })
-            fetchMessages()
-        }
+
+        const fetchMessages = (async () => {
+            const res = await getmessageApi(1, 100, selectedConversationId, token)
+            if (res.isSuccess) {
+                setMessages((prev) => {
+                    prev[selectedConversationId] = res.data
+                    return prev
+                })
+                setShowMessages(res.data)
+            }
+            else {
+                console.error(res.errorMessage);
+            }
+        })
+        fetchMessages()
+
     }, [selectedConversationId, token, messages, setMessages]);
+
+    useEffect(() => {
+        console.log('showMessages:', showMessages);
+    }, [showMessages]);
 
     const MessageContent = styled(Box)(({ theme, isSent }) => ({
         backgroundColor: isSent ? '#4caf50' : '#2196f3',
@@ -118,7 +128,7 @@ const Middlecom = () => {
             <Typography variant="h4" component="h1" mb={2}>{ }</Typography>
 
             <ChatContainer elevation={0}>
-                {Array.isArray(showMessages) && showMessages
+                {showMessages
                     .map((message) => (
                         <ChatMessage className={message.sender_id === loggedInUserId ? 'user-b' : 'user-a'}>
                             <MessageContent isSent={message.sender_id === loggedInUserId} >
