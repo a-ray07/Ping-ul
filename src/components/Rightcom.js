@@ -15,21 +15,17 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import { createconversationApi } from "../Services/conversation.service";
 import CentralState from "../context/CentralContext";
-import AuthState from "../auth/Authcontext";
+import AuthState from "../context/Authcontext";
 
 const Rightcom = () => {
   const [name, setName] = useState("");
   const [showMiddlecom, setShowMiddlecom] = useState(false);
   const [newUserId, setNewUserId] = useState("");
   const {
-    newConversation,
-    setNewConversation,
     selectedUser,
     setSelectedUSer,
-    addNewContactName,
-    setAddNewContactName,
-    isConversationsFetched,
     setIsConversationFetched,
+    selectedConversationId,
   } = useContext(CentralState);
 
   const { loggedinUserDetails } = useContext(AuthState);
@@ -41,9 +37,6 @@ const Rightcom = () => {
     const response = await createconversationApi(users, token);
     if (response.isSuccess) {
       console.log("Conversation created", response.data);
-      // const newUserName = response.data.user.name
-      // console.log('New Name:', newUserName)
-      //setNewConversation(response.data);
       setIsConversationFetched(false);
     } else {
       console.error(response.errorMessage);

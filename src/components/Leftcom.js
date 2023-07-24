@@ -8,7 +8,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { convfetchApi } from "../Services/conversation.service";
 import CentralState from "../context/CentralContext";
-import AuthState from "../auth/Authcontext";
+import AuthState from "../context/Authcontext";
 
 const Leftcom = () => {
   const {
@@ -87,6 +87,7 @@ const Leftcom = () => {
                     height: 60,
                     fontSize: "35px",
                     fontFamily: "Times New Roman",
+                    backgroundColor: "green",
                   }}
                 >
                   {loggedinUserDetails.uname

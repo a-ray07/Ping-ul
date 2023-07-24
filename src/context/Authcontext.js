@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { validateToken } from "../Services/auth.services";
+import { setToken, signInApi, validateToken } from "../Services/auth.services";
 
 const AuthState = createContext();
 
@@ -14,21 +14,6 @@ export const AuthProvider = ({ children }) => {
     uid: "",
     email: "",
   });
-
-  const checkLoggedInStatus = () => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
-    console.log("isLoggedIn: ", isLoggedIn);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("User id:");
-    localStorage.removeItem("name");
-    setIsLoggedIn(false);
-    console.log("logout", isLoggedIn);
-    navigate("/");
-  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -59,6 +44,47 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const handleSignIn = async (formData) => {
+    try {
+      const token = await setToken(formData);
+      const response = await signInApi(formData);
+      if (response.isSuccess) {
+        localStorage.setItem("token", token);
+        const { name, pingId, _id, email } = response.data;
+        setLoggedInUserDetails({
+          uname: name,
+          upingId: pingId,
+          uid: _id,
+          email: email,
+        });
+        setIsLoggedIn(true);
+        console.log("Signin Successful:", response);
+        navigate("/chatpage");
+      }
+    } catch (error) {
+      console.error("Signin Error:", error);
+    }
+  };
+
+  const checkLoggedInStatus = () => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+    console.log("isLoggedIn: ", isLoggedIn);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    setLoggedInUserDetails({
+      uname: "",
+      upingId: "",
+      uid: "",
+      email: "",
+    });
+    console.log("logout", isLoggedIn);
+    navigate("/");
+  };
+
   return (
     <AuthState.Provider
       value={{
@@ -68,6 +94,7 @@ export const AuthProvider = ({ children }) => {
         checkLoggedInStatus,
         handleLogout,
         loggedinUserDetails,
+        handleSignIn,
       }}
     >
       {children}

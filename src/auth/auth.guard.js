@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import AuthState from "../auth/Authcontext";
+import AuthState from "../context/Authcontext";
 import Chatpage from "../components/Chatpage";
 
 const ProtectedChatpage = ({ component: Component, ...rest }) => {

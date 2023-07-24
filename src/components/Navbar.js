@@ -6,9 +6,8 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Button from "@mui/material/Button";
-import AuthState from "../auth/Authcontext";
+import AuthState from "../context/Authcontext";
 import LoggedInUserDetails from "./LoggedInUserDetails";
-import { colors } from "@mui/material";
 
 const Navbar = () => {
   const { handleLogout, checkLoggedInStatus } = useContext(AuthState);

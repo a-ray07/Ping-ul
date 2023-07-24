@@ -11,7 +11,7 @@ import {
   personalmessageApi,
 } from "../Services/messages.service";
 import CentralState from "../context/CentralContext";
-import AuthState from "../auth/Authcontext";
+import AuthState from "../context/Authcontext";
 
 const ChatContainer = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -53,7 +53,7 @@ const Middlecom = () => {
     inputMessage,
     setInputMessage,
     selectedConversationId,
-    selectedUser,
+    handleSendMessage,
   } = useContext(CentralState);
   const [showMessages, setShowMessages] = useState([]);
 
@@ -63,37 +63,8 @@ const Middlecom = () => {
     setInputMessage(event.target.value);
   };
 
-  const handleSendMessage = async () => {
-    if (inputMessage.trim() === "") {
-      return;
-    }
-
-    const response = await personalmessageApi(
-      localStorage.getItem("token"),
-      selectedConversationId,
-      inputMessage,
-      loggedinUserDetails.uid
-    );
-
-    if (response.isSuccess) {
-      const newMessage = {
-        text: inputMessage,
-        sender_id: loggedinUserDetails.uid,
-        conversationId: selectedConversationId,
-      };
-      setMessages((prev) => {
-        prev[selectedConversationId].messages.push(newMessage);
-        return prev;
-      });
-      //setShowMessages((prev) => [...prev, newMessage]);
-
-      setInputMessage("");
-    } else {
-      console.log(
-        "Error occurred while sending message:",
-        response.errorMessage
-      );
-    }
+  const handleSendMessageText = () => {
+    handleSendMessage();
   };
 
   const token = localStorage.getItem("token");
@@ -177,7 +148,7 @@ const Middlecom = () => {
         <SendIcon
           style={{ fontSize: "2.2rem" }}
           color="primary"
-          onClick={handleSendMessage}
+          onClick={handleSendMessageText}
         />
       </ChatInputContainer>
     </Box>
